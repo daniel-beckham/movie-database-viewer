@@ -1,0 +1,14 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.header,
+.footer {
+  flex-shrink: 0;
+}
+
+.body {
+  flex-grow: 1;
+}
