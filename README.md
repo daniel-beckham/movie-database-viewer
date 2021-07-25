@@ -3,7 +3,7 @@
 
 This is a web app that displays searchable information about movies, TV shows, and people.
 
-The back end is powered by [Express](https://expressjs.com/) and uses the [The Movie Database](https://www.themoviedb.org/) API to retrieve all of the data. The front end is built with [React](https://reactjs.org/) using [Create React App](https://create-react-app.dev/). Both the back end and the front end are written in [https://www.typescriptlang.org/](TypeScript).
+The back end is powered by [Express](https://expressjs.com/) and uses the [The Movie Database](https://www.themoviedb.org/) API to retrieve all of the data. The front end is built with [React](https://reactjs.org/) using [Create React App](https://create-react-app.dev/). Both the back end and the front end are written in [TypeScript](https://www.typescriptlang.org/).
 
 The app has been configured primarily for use with Docker Compose, but it can also be set up manually. Instructions are provided below.
 
