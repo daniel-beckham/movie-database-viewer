@@ -4,6 +4,12 @@ export const movieType: string = 'movie';
 export const tvType: string = 'tv';
 export const personType: string = 'person';
 
+export const actingDepartment: string = 'Acting';
+export const directingDepartment: string = 'Directing';
+export const creatorDepartment: string = 'Creator';
+export const writingDepartment: string = 'Writing';
+export const productionDepartment: string = 'Production';
+
 export const genericPlaceholderImage: string = 'placeholder-generic.png';
 export const portraitPlaceholderImage: string = 'placeholder-portrait.png';
 
@@ -14,6 +20,32 @@ export let imageConfig = {
   posterSize: 'w500',
   profileSize: 'h632',
   stillSize: 'w300',
+};
+
+export const getFormattedRuntime = (
+  runtime: number | undefined
+): string | null => {
+  if (!runtime) {
+    return null;
+  }
+
+  if (runtime < 60) {
+    return runtime.toString() + 'm';
+  }
+
+  const time: Date = new Date(Date.UTC(0, 0, 0, 0, runtime, 0, 0));
+  const hours: number = time.getUTCHours();
+  const minutes: number = time.getUTCMinutes();
+
+  if (!hours) {
+    return minutes.toString() + 'm';
+  }
+
+  if (!minutes) {
+    return hours.toString() + 'h';
+  }
+
+  return hours.toString() + 'h ' + minutes.toString() + 'm';
 };
 
 export const getImageConfig = async (): Promise<void> => {
@@ -104,28 +136,28 @@ export const getImageUrl = (
   );
 };
 
-export const getFormattedRuntime = (
-  runtime: number | undefined
-): string | null => {
-  if (!runtime) {
-    return null;
+export const getJobFromDepartment = (
+  department: string | undefined,
+  gender: number | undefined = undefined
+): string | undefined => {
+  const femaleGender: number = 1;
+
+  switch (department) {
+    case actingDepartment:
+      return gender === femaleGender ? 'Actress' : 'Actor';
+    case directingDepartment:
+      return 'Director';
+    case creatorDepartment:
+      return 'Creator';
+    case writingDepartment:
+      return 'Writer';
+    case productionDepartment:
+      return 'Producer';
+  }
+  
+  if (department?.length) {
+    return department + ' Department';
   }
 
-  if (runtime < 60) {
-    return runtime.toString() + 'm';
-  }
-
-  const time: Date = new Date(Date.UTC(0, 0, 0, 0, runtime, 0, 0));
-  const hours: number = time.getUTCHours();
-  const minutes: number = time.getUTCMinutes();
-
-  if (!hours) {
-    return minutes.toString() + 'm';
-  }
-
-  if (!minutes) {
-    return hours.toString() + 'h';
-  }
-
-  return hours.toString() + 'h ' + minutes.toString() + 'm';
+  return department;
 };

@@ -1,8 +1,18 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 
-import { Box, Card, Grid, Image, ResponsiveContext, Text } from 'grommet';
+import {
+  Box,
+  Card,
+  Grid,
+  Heading,
+  Image,
+  ResponsiveContext,
+  Text,
+} from 'grommet';
 
+import AnchorLink from 'components/AnchorLink';
+import AnimatedBox from 'components/AnimatedBox';
 import DataSpinner from 'components/DataSpinner';
 import MediaList from 'components/MediaList';
 import * as urlUtils from 'utils/url';
@@ -12,10 +22,9 @@ const MediaDetailed = () => {
 
   const size = useContext(ResponsiveContext);
 
-  const [cast, setCast] = useState<any>({});
+  const [credits, setCredits] = useState<any>({});
   const [error, setError] = useState(false);
   const [info, setInfo] = useState<any>({});
-  const [knownFor, setKnownFor] = useState<any>({});
 
   const { id } = useParams<{ id: string }>();
 
@@ -35,20 +44,20 @@ const MediaDetailed = () => {
           const info = await response.json();
 
           if (info.name) {
-            document.title = info.name;
+            document.title =
+              info.name +
+              (info.date ? ' (' + new Date(info.date).getFullYear() + ')' : '');
           }
 
           setInfo(info);
 
-          if (info.knownFor) {
-            setKnownFor(info.knownFor);
-          } else {
+          if (!info.knownFor) {
             const response = await fetch(
               urlUtils.getMediaCreditsApiUrl(type, id)
             );
             const credits: any = await response.json();
 
-            setCast(credits);
+            setCredits(credits);
           }
         }
       } catch (e: any) {
@@ -57,49 +66,56 @@ const MediaDetailed = () => {
     })();
   }, [id, location]);
 
-  const Title = () => {
+  /* Media heading */
+  const MediaHeading = () => {
     return (
-      <React.Fragment>
-        <Text weight="bold" size={size !== 'small' ? '4xl' : 'xlarge'}>
+      <Box>
+        {/* Title or name */}
+        <Heading level="1" margin="none">
           {info.name}
+        </Heading>
+        {/* Subheading */}
+        <Text size={size !== 'small' ? 'large' : 'medium'}>
+          {/* Job (person only) */}
+          {info.job ? info.job : <React.Fragment />}
+          {/* Date (movie or TV show only) */}
           {info.date ? (
-            <Text weight="normal" size={size !== 'small' ? '4xl' : 'xlarge'}>
+            <React.Fragment>
               {' '}
-              ({new Date(info.date).getFullYear()})
-            </Text>
+              {new Date(info.date).getFullYear()}
+              {info.genres || info.runtime ? ' \u2022 ' : ''}
+            </React.Fragment>
           ) : (
             <React.Fragment />
           )}
-        </Text>
-        <Text size={size !== 'small' ? 'large' : 'small'}>
+          {/* Genres (movie or TV show only) */}
           {info.genres ? info.genres : ''}
           {info.genres && info.runtime ? ' \u2022 ' : ''}
+          {/* Runtime (movie or TV show only) */}
           {info.runtime ? info.runtime : ''}
         </Text>
-      </React.Fragment>
+      </Box>
     );
   };
 
   return (
     <React.Fragment>
       {Object.keys(info).length ? (
-        <Box
-          animation={[
-            { type: 'fadeIn', duration: 200 },
-            { type: 'slideUp', duration: 200 },
-          ]}
-        >
+        <AnimatedBox>
+          {/* Heading, image, overview/biography, directors/creators, and/or stars */}
           <Grid
             columns={size !== 'small' ? ['25%', 'auto'] : 'auto'}
             gap="medium"
           >
+            {/* Heading (mobile only) */}
             {size === 'small' ? (
               <Box>
-                <Title />
+                <MediaHeading />
               </Box>
             ) : (
               <React.Fragment />
             )}
+            {/* Image */}
             <Card
               alignSelf="start"
               width={size !== 'small' ? { max: 'medium' } : { max: 'small' }}
@@ -107,7 +123,9 @@ const MediaDetailed = () => {
               <Image a11yTitle="" fill={true} fit="contain" src={info.image} />
             </Card>
             <Box>
-              {size !== 'small' ? <Title /> : <React.Fragment />}
+              {/* Heading (desktop only) */}
+              {size !== 'small' ? <MediaHeading /> : <React.Fragment />}
+              {/* Overview (movies and TV shows) or biography (people) */}
               {info.overview || info.biography ? (
                 <React.Fragment>
                   <Text
@@ -125,36 +143,109 @@ const MediaDetailed = () => {
                       ? 'Biography'
                       : ''}
                   </Text>
-                  <Text>{info.overview || info.biography}</Text>
+                  <Text
+                    margin={{ bottom: 'medium' }}
+                    style={{ whiteSpace: 'pre-wrap' }}
+                  >
+                    {info.overview || info.biography}
+                  </Text>
                 </React.Fragment>
+              ) : (
+                <React.Fragment />
+              )}
+              {/* Directors (movies) or creators (TV shows) */}
+              {(credits.directors && credits.directors.length) ||
+              (info.creators && info.creators.length) ? (
+                <AnimatedBox>
+                  <Text>
+                    <Text margin={{ right: 'small' }} weight="bold">
+                      {credits.directors && credits.directors.length
+                        ? credits.directors.length === 1
+                          ? 'Director'
+                          : 'Directors'
+                        : ''}
+                      {info.creators && info.creators.length
+                        ? info.creators.length === 1
+                          ? 'Creator'
+                          : 'Creators'
+                        : ''}
+                    </Text>
+                    {(credits.directors || info.creators).map(
+                      (element: any, index: number) => (
+                        <React.Fragment key={index}>
+                          <AnchorLink
+                            label={element.name}
+                            url={urlUtils.getMediaDetailUrl(
+                              element.type,
+                              element.id
+                            )}
+                          />
+                          {index !==
+                          (credits.directors || info.creators).length - 1
+                            ? ', '
+                            : ''}
+                        </React.Fragment>
+                      )
+                    )}
+                  </Text>
+                </AnimatedBox>
+              ) : (
+                <React.Fragment />
+              )}
+              {/* Stars (movies and TV shows) */}
+              {credits.cast && credits.cast.length ? (
+                <AnimatedBox>
+                  <Text margin={{ bottom: 'medium' }}>
+                    <Text margin={{ right: 'small' }} weight="bold">
+                      Stars
+                    </Text>
+                    {/* First 3 from top cast */}
+                    {credits.cast
+                      .slice(0, 3)
+                      .map((element: any, index: number) => (
+                        <React.Fragment key={index}>
+                          <AnchorLink
+                            label={element.name}
+                            url={urlUtils.getMediaDetailUrl(
+                              element.type,
+                              element.id
+                            )}
+                          />
+                          {index !== 2 ? ', ' : ''}
+                        </React.Fragment>
+                      ))}
+                  </Text>
+                </AnimatedBox>
               ) : (
                 <React.Fragment />
               )}
             </Box>
           </Grid>
-          {Object.keys(cast).length || Object.keys(knownFor).length ? (
+          {/* Top cast (movies and TV shows) or known for (people) */}
+          {(credits.cast && credits.cast.length) ||
+          (info.knownFor && info.knownFor.length) ? (
             <Box>
               <Text
                 margin={
                   size !== 'small'
                     ? { bottom: 'medium', top: 'large' }
-                    : { vertical: 'small' }
+                    : { bottom: 'small', top: 'none' }
                 }
                 size={size !== 'small' ? '2xl' : 'large'}
                 weight="bold"
               >
-                {Object.keys(cast).length
+                {credits.cast && credits.cast.length
                   ? 'Top Cast'
-                  : Object.keys(knownFor).length
+                  : info.knownFor && info.knownFor.length
                   ? 'Known For'
                   : ''}
               </Text>
               <MediaList
                 data={
-                  Object.keys(cast).length
-                    ? cast
-                    : Object.keys(knownFor).length
-                    ? knownFor
+                  credits.cast && credits.cast.length
+                    ? credits.cast
+                    : info.knownFor && info.knownFor.length
+                    ? info.knownFor
                     : ''
                 }
               />
@@ -162,7 +253,7 @@ const MediaDetailed = () => {
           ) : (
             <React.Fragment />
           )}
-        </Box>
+        </AnimatedBox>
       ) : (
         <DataSpinner error={error} />
       )}

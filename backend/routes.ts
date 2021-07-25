@@ -5,6 +5,7 @@ import * as utils from './utils';
 const router: Router = express.Router();
 
 export const maxCredits: number = 10;
+export const maxGenres: number = 2;
 export const maxSearchSuggestions: number = 5;
 
 router.get('/movie/:id', async (req: Request, res: Response) => {
@@ -19,8 +20,9 @@ router.get('/movie/:id', async (req: Request, res: Response) => {
       date: movieDbResponse.release_date,
       runtime: utils.getFormattedRuntime(movieDbResponse.runtime),
       genres: movieDbResponse.genres
-        ? movieDbResponse.genres.map((genre: any) => genre.name).join(', ')
-        : null,
+        ?.slice(0, maxGenres)
+        .map((genre) => genre.name)
+        .join(', '),
     };
 
     res.send(infoResponse);
@@ -33,20 +35,31 @@ router.get('/movie/:id', async (req: Request, res: Response) => {
 router.get('/movie/:id/credits', async (req: Request, res: Response) => {
   try {
     const movieDbResponse = await moviedb.movieCredits(req.params.id);
+    const creditsResponse: any = {};
 
-    if (movieDbResponse.cast) {
-      const creditsResponse = movieDbResponse.cast
-        .slice(0, maxCredits)
-        .map((result: any) => ({
-          id: result.id,
-          type: utils.personType,
-          name: result.name,
-          image: utils.getImageUrl(utils.personType, null, result.profile_path),
-          character: result.character,
-        }));
+    creditsResponse.cast = movieDbResponse.cast
+      ?.slice(0, maxCredits)
+      .map((result) => ({
+        id: result.id,
+        type: utils.personType,
+        name: result.name,
+        image: utils.getImageUrl(utils.personType, null, result.profile_path),
+        character: result.character,
+      }));
 
-      res.send(creditsResponse);
-    }
+    creditsResponse.directors = movieDbResponse.crew
+      ?.filter(
+        (result) =>
+          result.job === utils.getJobFromDepartment(utils.directingDepartment)
+      )
+      .map((result) => ({
+        id: result.id,
+        type: utils.personType,
+        name: result.name,
+        image: utils.getImageUrl(utils.personType, null, result.profile_path),
+      }));
+
+    res.send(creditsResponse);
   } catch (error: any) {
     res.sendStatus(400);
   }
@@ -70,8 +83,15 @@ router.get('/tv/:id', async (req: Request, res: Response) => {
           : undefined
       ),
       genres: movieDbResponse.genres
-        ? movieDbResponse.genres.map((genre: any) => genre.name).join(', ')
-        : null,
+        ?.slice(0, maxGenres)
+        .map((genre) => genre.name)
+        .join(', '),
+      creators: movieDbResponse.created_by?.map((result) => ({
+        id: result.id,
+        type: utils.personType,
+        name: result.name,
+        image: utils.getImageUrl(utils.personType, null, result.profile_path),
+      })),
     };
 
     res.send(infoResponse);
@@ -83,20 +103,19 @@ router.get('/tv/:id', async (req: Request, res: Response) => {
 router.get('/tv/:id/credits', async (req: Request, res: Response) => {
   try {
     const movieDbResponse = await moviedb.tvCredits(req.params.id);
+    const creditsResponse: any = {};
 
-    if (movieDbResponse.cast) {
-      const creditsResponse = movieDbResponse.cast
-        .slice(0, maxCredits)
-        .map((result: any) => ({
-          id: result.id,
-          type: utils.personType,
-          name: result.name,
-          image: utils.getImageUrl(utils.personType, null, result.profile_path),
-          character: result.character,
-        }));
+    creditsResponse.cast = movieDbResponse.cast
+      ?.slice(0, maxCredits)
+      .map((result) => ({
+        id: result.id,
+        type: utils.personType,
+        name: result.name,
+        image: utils.getImageUrl(utils.personType, null, result.profile_path),
+        character: result.character,
+      }));
 
-      res.send(creditsResponse);
-    }
+    res.send(creditsResponse);
   } catch (error: any) {
     res.sendStatus(400);
   }
@@ -113,14 +132,12 @@ router.get('/person/:id', async (req: Request, res: Response) => {
         query: movieDbInfoResponse.name,
       });
 
-      if (movieDbSearchResponse.results) {
-        movieDbSearchResponse.results.forEach((person) => {
-          if (person.id === movieDbInfoResponse.id) {
-            knownFor = person.known_for;
-            return;
-          }
-        });
-      }
+      movieDbSearchResponse.results?.forEach((person) => {
+        if (person.id === movieDbInfoResponse.id) {
+          knownFor = person.known_for;
+          return;
+        }
+      });
     }
 
     const infoResponse = {
@@ -134,14 +151,16 @@ router.get('/person/:id', async (req: Request, res: Response) => {
         null,
         movieDbInfoResponse.profile_path
       ),
-      knownFor: knownFor
-        ? knownFor.map((credit: any) => ({
-            id: credit.id,
-            type: credit.media_type,
-            name: credit.title || credit.name,
-            image: utils.getImageUrl(credit.media_type, credit.poster_path),
-          }))
-        : null,
+      job: utils.getJobFromDepartment(
+        movieDbInfoResponse.known_for_department,
+        movieDbInfoResponse.gender
+      ),
+      knownFor: knownFor?.map((credit: any) => ({
+        id: credit.id,
+        type: credit.media_type,
+        name: credit.title || credit.name,
+        image: utils.getImageUrl(credit.media_type, credit.poster_path),
+      })),
     };
 
     res.send(infoResponse);

@@ -29,6 +29,11 @@ const theme = deepMerge(grommet, {
       box-shadow: none;outline: none;
     }`,
   },
+  table: {
+    body: {
+      pad: { vertical: 'xxsmall' },
+    },
+  },
 });
 
 const App = () => {

@@ -15,6 +15,6 @@ const AnchorLink = (props: any) => {
       {...props}
     />
   );
-}
+};
 
 export default AnchorLink;

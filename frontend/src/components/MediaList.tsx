@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Card, CardBody, Grid, Image, Text } from 'grommet';
 
 import AnchorLink from './AnchorLink';
+import AnimatedBox from './AnimatedBox';
 import DataSpinner from './DataSpinner';
 import * as urlUtils from 'utils/url';
 
@@ -37,32 +38,30 @@ function MediaList(props: any) {
   return (
     <React.Fragment>
       {data && data.length ? (
-        <Box
-          animation={[
-            { type: 'fadeIn', duration: 200 },
-            { type: 'slideUp', duration: 200 },
-          ]}
-        >
+        <AnimatedBox>
           <Grid columns="small" gap="medium">
             {data.map((element: any) => (
+              /* Image, title/name, and character name */
               <Card key={element.id}>
                 <AnchorLink
                   title={element.name}
                   url={urlUtils.getMediaDetailUrl(element.type, element.id)}
                 >
+                  {/* Image */}
                   <CardBody>
                     <Image a11yTitle="" fill={true} src={element.image} />
                   </CardBody>
                 </AnchorLink>
                 <Box pad="small">
+                  {/* Title (movies or TV shows) or name (people) */}
                   <Text textAlign="center">
                     <AnchorLink
+                      label={element.name}
                       title={element.name}
                       url={urlUtils.getMediaDetailUrl(element.type, element.id)}
-                    >
-                      {element.name}
-                    </AnchorLink>
+                    />
                   </Text>
+                  {/* Character name (movies or TV shows) */}
                   {element.character ? (
                     <Text textAlign="center">{element.character}</Text>
                   ) : (
@@ -72,7 +71,7 @@ function MediaList(props: any) {
               </Card>
             ))}
           </Grid>
-        </Box>
+        </AnimatedBox>
       ) : (
         <DataSpinner error={error} />
       )}
