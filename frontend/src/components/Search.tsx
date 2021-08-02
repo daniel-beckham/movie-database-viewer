@@ -113,7 +113,7 @@ const Search = () => {
 
     const suggestionValue = event.suggestion.value;
     history.push(
-      urlUtils.getMediaDetailUrl(suggestionValue.type, suggestionValue.id)
+      urlUtils.getMediaDetailedUrl(suggestionValue.type, suggestionValue.id)
     );
   };
 

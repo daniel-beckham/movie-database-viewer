@@ -94,7 +94,7 @@ const Header = () => {
             fill
             gap="medium"
             justify="start"
-            pad={{ left: 'medium', right: 'medium', top: 'medium' }}
+            pad="medium"
           >
             <Text size="xlarge">
               <AnchorLink label="Movies" url={urlUtils.popularMoviesUrl} />

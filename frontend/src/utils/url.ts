@@ -19,7 +19,7 @@ export const searchApiUrl: string = baseApiUrl + '/search';
 export const searchSuggestionsApiUrl: string =
   baseApiUrl + '/search/suggestions';
 
-export const getMediaDetailUrl = (type: string, id: string): string => {
+export const getMediaDetailedUrl = (type: string, id: string): string => {
   return baseUrl + '/' + type + '/' + id;
 };
 

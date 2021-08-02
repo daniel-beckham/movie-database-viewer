@@ -175,7 +175,7 @@ const MediaDetailed = () => {
                         <React.Fragment key={index}>
                           <AnchorLink
                             label={element.name}
-                            url={urlUtils.getMediaDetailUrl(
+                            url={urlUtils.getMediaDetailedUrl(
                               element.type,
                               element.id
                             )}
@@ -197,7 +197,11 @@ const MediaDetailed = () => {
                 <AnimatedBox>
                   <Text margin={{ bottom: 'medium' }}>
                     <Text margin={{ right: 'small' }} weight="bold">
-                      Stars
+                      {credits.cast && credits.cast.length
+                        ? credits.cast.length === 1
+                          ? 'Star'
+                          : 'Stars'
+                        : ''}
                     </Text>
                     {/* First 3 from top cast */}
                     {credits.cast
@@ -206,12 +210,12 @@ const MediaDetailed = () => {
                         <React.Fragment key={index}>
                           <AnchorLink
                             label={element.name}
-                            url={urlUtils.getMediaDetailUrl(
+                            url={urlUtils.getMediaDetailedUrl(
                               element.type,
                               element.id
                             )}
                           />
-                          {index !== 2 ? ', ' : ''}
+                          {index !== credits.cast.length - 1 ? ', ' : ''}
                         </React.Fragment>
                       ))}
                   </Text>

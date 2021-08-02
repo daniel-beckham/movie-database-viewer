@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { Box, Card, CardBody, Grid, Image, Text } from 'grommet';
+import { Box, Card, CardBody, Grid, Text } from 'grommet';
 
 import AnchorLink from './AnchorLink';
 import AnimatedBox from './AnimatedBox';
 import DataSpinner from './DataSpinner';
+import MediaImage from './MediaImage';
 import * as urlUtils from 'utils/url';
 
 function MediaList(props: any) {
@@ -45,11 +46,11 @@ function MediaList(props: any) {
               <Card key={element.id}>
                 <AnchorLink
                   title={element.name}
-                  url={urlUtils.getMediaDetailUrl(element.type, element.id)}
+                  url={urlUtils.getMediaDetailedUrl(element.type, element.id)}
                 >
                   {/* Image */}
                   <CardBody>
-                    <Image a11yTitle="" fill={true} src={element.image} />
+                    <MediaImage src={element.image} />
                   </CardBody>
                 </AnchorLink>
                 <Box pad="small">
@@ -58,7 +59,10 @@ function MediaList(props: any) {
                     <AnchorLink
                       label={element.name}
                       title={element.name}
-                      url={urlUtils.getMediaDetailUrl(element.type, element.id)}
+                      url={urlUtils.getMediaDetailedUrl(
+                        element.type,
+                        element.id
+                      )}
                     />
                   </Text>
                   {/* Character name (movies or TV shows) */}
