@@ -50,7 +50,7 @@ function MediaList(props: any) {
                 >
                   {/* Image */}
                   <CardBody>
-                    <MediaImage src={element.image} />
+                    <MediaImage fill={true} src={element.image} />
                   </CardBody>
                 </AnchorLink>
                 <Box pad="small">

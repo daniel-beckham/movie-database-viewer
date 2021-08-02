@@ -6,7 +6,6 @@ import {
   Card,
   Grid,
   Heading,
-  Image,
   ResponsiveContext,
   Text,
 } from 'grommet';
@@ -15,6 +14,7 @@ import AnchorLink from 'components/AnchorLink';
 import AnimatedBox from 'components/AnimatedBox';
 import DataSpinner from 'components/DataSpinner';
 import MediaList from 'components/MediaList';
+import MediaImage from 'components/MediaImage';
 import * as urlUtils from 'utils/url';
 
 const MediaDetailed = () => {
@@ -70,7 +70,7 @@ const MediaDetailed = () => {
   const MediaHeading = () => {
     return (
       <Box>
-        {/* Title or name */}
+        {/* Name */}
         <Heading level="1" margin="none">
           {info.name}
         </Heading>
@@ -120,7 +120,11 @@ const MediaDetailed = () => {
               alignSelf="start"
               width={size !== 'small' ? { max: 'medium' } : { max: 'small' }}
             >
-              <Image a11yTitle="" fill={true} fit="contain" src={info.image} />
+              <MediaImage
+                fill={true}
+                fit="contain"
+                src={info.image}
+              />
             </Card>
             <Box>
               {/* Heading (desktop only) */}
@@ -215,7 +219,9 @@ const MediaDetailed = () => {
                               element.id
                             )}
                           />
-                          {index !== credits.cast.length - 1 ? ', ' : ''}
+                          {index !== credits.cast.length - 1 && index !== 2
+                            ? ', '
+                            : ''}
                         </React.Fragment>
                       ))}
                   </Text>
