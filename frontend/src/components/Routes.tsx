@@ -9,7 +9,7 @@ import * as urlUtils from 'utils/url';
 const Routes = () => {
   return (
     <Switch>
-      <Route exact path={urlUtils.baseNonEmptyUrl}>
+      <Route exact path={urlUtils.trendingUrl}>
         <MediaTrending key={0} />
       </Route>
       <Route exact path={urlUtils.popularMoviesRoute}>
@@ -35,7 +35,7 @@ const Routes = () => {
       </Route>
       {/* Not found */}
       <Route>
-        <Redirect to={urlUtils.baseNonEmptyUrl} />
+        <Redirect to={urlUtils.trendingUrl} />
       </Route>
     </Switch>
   );

@@ -2,6 +2,7 @@ export const baseUrl: string = `${process.env.PUBLIC_URL}` || '';
 export const baseNonEmptyUrl: string = baseUrl ? baseUrl : '/';
 export const baseApiUrl = baseUrl + '/api';
 
+export const trendingUrl: string = baseUrl + '/trending';
 export const popularMoviesUrl: string = baseUrl + '/movie/popular';
 export const popularTvShowsUrl: string = baseUrl + '/tv/popular';
 export const popularPeopleUrl: string = baseUrl + '/person/popular';

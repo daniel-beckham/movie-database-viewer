@@ -30,7 +30,7 @@ const Header = () => {
                 <AnchorLink
                   color="white"
                   label="Movie Database Viewer"
-                  url={urlUtils.baseNonEmptyUrl}
+                  url={urlUtils.trendingUrl}
                 />
               </Heading>
               <AnchorLink
@@ -60,7 +60,7 @@ const Header = () => {
                 <AnchorLink
                   color="white"
                   label="Movie Database Viewer"
-                  url={urlUtils.baseNonEmptyUrl}
+                  url={urlUtils.trendingUrl}
                 />
               </Heading>
             </Box>
