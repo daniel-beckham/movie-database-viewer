@@ -56,7 +56,7 @@ const Search = () => {
 
   const getSuggestions = async (text: string) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 250));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       if (text !== valueRef.current) {
         return;
