@@ -18,7 +18,8 @@ const SearchResults = () => {
   }, []);
 
   useEffect(() => {
-    document.title = 'Results for "' + query.get('q') + '"';
+    document.title =
+      'Results for "' + query.get('q') + '" - Movie Database Viewer';
   }, [query]);
 
   return (

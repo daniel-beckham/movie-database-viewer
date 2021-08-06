@@ -27,7 +27,7 @@ const MediaTrending = () => {
     let type = urlUtils.getMediaTypeFromUrl(location.pathname);
     let title = type ? titles[type] : titles['all'];
 
-    document.title = title;
+    document.title = title + ' - Movie Database Viewer';
 
     setTitle(title);
     setUrl(urlUtils.getMediaTrendingApiUrl(type ? type : 'all', 'week'));

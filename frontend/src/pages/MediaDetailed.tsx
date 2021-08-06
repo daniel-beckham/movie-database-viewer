@@ -1,14 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 
-import {
-  Box,
-  Card,
-  Grid,
-  Heading,
-  ResponsiveContext,
-  Text,
-} from 'grommet';
+import { Box, Card, Grid, Heading, ResponsiveContext, Text } from 'grommet';
 
 import AnchorLink from 'components/AnchorLink';
 import AnimatedBox from 'components/AnimatedBox';
@@ -46,7 +39,10 @@ const MediaDetailed = () => {
           if (info.name) {
             document.title =
               info.name +
-              (info.date ? ' (' + new Date(info.date).getFullYear() + ')' : '');
+              (info.date
+                ? ' (' + new Date(info.date).getFullYear() + ')'
+                : '') +
+              ' - Movie Database Viewer';
           }
 
           setInfo(info);
@@ -120,11 +116,7 @@ const MediaDetailed = () => {
               alignSelf="start"
               width={size !== 'small' ? { max: 'medium' } : { max: 'small' }}
             >
-              <MediaImage
-                fill={true}
-                fit="contain"
-                src={info.image}
-              />
+              <MediaImage fill={true} fit="contain" src={info.image} />
             </Card>
             <Box>
               {/* Heading (desktop only) */}
